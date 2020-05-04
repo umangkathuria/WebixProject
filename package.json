@@ -1,0 +1,24 @@
+{
+  "name": "webix_tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "google-play-scraper": "^7.1.2",
+    "live-server": "^1.2.1",
+    "local-storage": "^2.0.0",
+    "mongodb": "^3.5.5",
+    "mongoose": "^5.9.9",
+    "umang_logger_module": "^1.1.4",
+    "webix": "^7.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

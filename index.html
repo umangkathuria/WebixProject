@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
+    <script src="http://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+    <script src="./index.js" type="text/javascript"></script>
+    <script src="./components.js" type="text/javascript"></script>
+    <script src="./utils.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <script>
+        
+        webix.ui({
+            type: "space",
+            view: "layout",
+            scroll:true,
+            responsive: true,
+            rows: [
+                {
+                    view: "toolbar",
+                    elements: [
+                        {
+                            view: "button", id: 'btn_roles',
+                            value: "Roles", width: 100,
+                            click: showView, css: "webix_primary"
+                        },
+                        {
+                            view: "button", id: 'btn_addUser',
+                            value: "Add User", width: 100,
+                            click: loadAddUserForm, css: "webix_primary"
+                        }
+                    ]
+                },
+                {
+                    view: "list",
+                    id: "id_all_user_list",
+                    template: `<div>
+                                    <h4 id="title-div">#name#</h4>
+                                    <p>Email ID : #email#, Role: #role#</p>
+                                </div>`,
+                    data:  getUsers(),
+                    select: true,
+                    height: 200,
+                    autoheight: true,
+                    autoWidth: true,
+                    type: {
+                        height: 100
+                    },
+                    click: editUser,
+                    scroll:true,
+
+                }]
+        });
+        
+
+    </script>
+</body>
+
+</html>

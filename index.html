@@ -24,7 +24,7 @@
                         {
                             view: "button", id: 'btn_roles',
                             value: "Roles", width: 100,
-                            click: showView, css: "webix_primary"
+                            click: showRoleView, css: "webix_primary"
                         },
                         {
                             view: "button", id: 'btn_addUser',
@@ -36,6 +36,11 @@
                 {
                     view: "list",
                     id: "id_all_user_list",
+                    rules:{
+                            role:webix.rules.isNotEmpty,
+                            name:webix.rules.isNotEmpty,
+                            email:webix.rules.isNotEmpty
+                        },
                     template: `<div>
                                     <h4 id="title-div">#name#</h4>
                                     <p>Email ID : #email#, Role: #role#</p>

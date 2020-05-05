@@ -27,6 +27,7 @@ app.get("/addUser", userHandler.addUser);
 app.get("/getRoles", roleHandler.getAllRoles);
 app.get("/deleteRole", roleHandler.deleteRole);
 app.get("/addRole", roleHandler.addRole);
+app.get("/updateRole", roleHandler.updateRole);
 
 
 // Route for /getAllApps

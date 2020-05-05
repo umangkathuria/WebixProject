@@ -1,33 +1,59 @@
 
-function showView(id) {
-    webix.message("Click on button " + id);
-    switch (id) {
-        case "btn_roles":
-            webix.ui(roles_form).show()
-            $$('roles_list').attachEvent('onViewShow', function () {
-                this.data = getRoles();
-                // console.log(this.data);
-                console.log(this);
-            })
-            break;
-
-        default:
-            break;
-    }
+function showRoleView(id) {
+    webix.ui(roles_form).show()
+    getRoles()
+    .then((roles) => {
+        $$('roles_list').parse(roles, "json");
+    })
+    
 }
 
+
+function showRoleEditView(user) {
+    roles_edit.body.elements[0].value = user.role;
+    webix.ui(roles_edit).show()
+    console.log(user);
+    $$('btnRoleRemove').attachEvent('onItemClick', function () {
+        // Fetch the data from inputs
+
+        let role = $$("roleEdit").getValue();
+
+        // Call to Backend for adding data to user. 
+        deleteRole(role);
+
+        // Reomve from list
+        $$('roles_list').remove(user.id);
+        this.getParentView().getParentView().hide();
+    })
+
+    $$('btnRoleUpdate').attachEvent('onItemClick', function () {
+
+        // Fetch the data from inputs
+        let role = $$("roleEdit").getValue();
+
+        // Call to Backend for adding data to user. 
+        updateRole(user.role, role);
+        // Update the List
+        $$('roles_list').updateItem(user.id, { role: role});
+        console.log(user);
+        $$('roles_list').refresh();
+        // $$('roles_list').add({ role }, 0);
+        this.getParentView().getParentView().hide();
+    })
+}
 
 function editUser(element) {
     let options;
     options = {
         mode: "edit",
-        input: {}
+        input: {},
+        id: element
     }
     var user = this.getItem(element);
     console.log("User- ", user);
     options.input = user;
+    console.log("Element - ", element);
     loadAddUserForm(options)
-    console.log(element);
 }
 
 function addDataToList(data) {
@@ -61,12 +87,12 @@ function loadAddUserForm(options) {
                 let input = {};
                 input.name = $$("name").getValue();
                 input.email = $$("email").getValue();
-                input.role = $$("role").getValue();
-
+                input.role = $$("roleDD").getValue("role");
+                input.id = options.id;
                 // Call to Backend for adding data to user. 
                 addUser(input);
                 // Update the List
-                addDataToList(input)
+                $$("id_all_user_list").updateItem(options.id, input);
                 $$("id_all_user_list").refresh();
                 this.getParentView().getParentView().hide();
             }
@@ -79,7 +105,7 @@ function loadAddUserForm(options) {
                 let input = {};
                 input.name = $$("name").getValue();
                 input.email = $$("email").getValue();
-                input.role = $$("role").getValue();
+                input.role = $$("roleDD").getValue("role");
 
                 // Call to Backend for adding data to user. 
                 deleteUser(input);
@@ -99,6 +125,7 @@ function loadAddUserForm(options) {
 
         };
         let editUserView = JSON.parse(JSON.stringify(addUserFormNew));
+        editUserView.head = "Update user"
         editUserView.body.elements[3] = saveButton;
         // editUserView.body.elements.push(saveButton)
         editUserView.body.elements.push(deleteButton)
@@ -112,18 +139,52 @@ function loadAddUserForm(options) {
         editUserView.body.elements[0].value = options.input.name;
         editUserView.body.elements[1].value = options.input.email;
         editUserView.body.elements[2].value = options.input.role;
-        webix.ui(editUserView).show();
+        // editUserView.body.elements[1].readonly = true; 
+
+
+        getRoles()
+            .then((roles) => {
+                webix.ui(editUserView).show();
+                $$('email').disable();
+                let opt = [];
+                roles.forEach(obj => {
+                    opt.push(obj.role);
+                });
+                opt.push("Create a new role");
+                $$('roleDD').define({
+                    options: opt,
+                    value: "role"
+                });
+                $$('roleDD').refresh();
+            })
+            .catch((err) => {
+                console.log(err);
+                webix.message("Could not fetch updated roles.");
+            })
 
     }
     else {
         getRoles()
             .then((roles) => {
                 webix.ui(addUserFormNew).show();
-                console.log( "ROLE DD--",$$('add-user-form').elements.roleDD);
-                $$('add-user-form').elements.roleDD.options = roles;
-                let r = getRoles();
-                let rs = Promise.resolve(r)
-                console.log("RS",rs);
+                // console.log( "ROLE DD--",$$('add-user-form').elements.roleDD);
+                console.log("Select List - ", $$('roleDD'));
+                let opt = [];
+                roles.forEach(obj => {
+                    console.log("OBJ - ", obj);
+                    opt.push(obj.role);
+                });
+                opt.push("Create a new role");
+                $$('roleDD').define({
+                    options: opt,
+                    value: "role"
+                });
+                $$('roleDD').refresh();
             })
     }
+}
+
+
+function loadRoleEditView(seletedRole){
+
 }

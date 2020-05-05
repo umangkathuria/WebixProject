@@ -2,7 +2,7 @@
   "name": "webix_tutorial",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "axios": "^0.19.2",
     "express": "^4.17.1",

@@ -54,6 +54,15 @@ function addRole(role) {
     webix.ajax(`${host}/addRole?role=${JSON.stringify(role)}`)
 }
 
+function updateRole(oldRole, newRole) {
+    // console.log("Received role- ", role);
+    let updateOpts = {
+        oldVal : oldRole,
+        newVal : newRole
+    }
+    webix.ajax(`${host}/updateRole?updateOpts=${JSON.stringify(updateOpts)}`)
+}
+
 
 function deleteUser(user) {
     console.log("Remiving User... ", user);

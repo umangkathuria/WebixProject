@@ -1,14 +1,10 @@
 /**
  * Imports
  */
-
-// File system module to perform file operations
 const fs = require('fs');
 const utils = require('../utils/utils')
 const fileName = './data/users.json';
 
-let local_users = [];
-let local_roles = [];
 
 /**
  * Use this handler function to handle all requests at /getUser endpoint. 
@@ -58,23 +54,24 @@ function deleteUser(request, response) {
  * @param {Object} response Response object
  */
 function addUser(request, response) {
-    // console.log(request.query.user)
-    let user = JSON.parse(request.query.user);
-
+    let isUpdate = false;
+    let user = JSON.parse(request.body.body);
     let existingUser = JSON.parse(fs.readFileSync(fileName));
     if(existingUser.length > 0){
         existingUser.forEach((oldUser)=>{
-            if(oldUser.email === user.email){
+            if(oldUser.email == user.email){
+                isUpdate = true;
                 oldUser.name = user.name;
                 oldUser.role = user.role;
             }
         })
+        if(!isUpdate){
+            existingUser.push(user);
+        }
     }else{
         existingUser.push(user);
     }
    
-    // let users = utils.removeItem(existingUser, user);
-    // users.push(user);
     if( utils.writeToFile(fileName, existingUser)) {
         response.send({
             status: 'Operation Success',

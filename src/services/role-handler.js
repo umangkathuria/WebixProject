@@ -1,9 +1,17 @@
-// file system module to perform file operations
+/**
+ * Imports
+ */
 const fs = require('fs');
 const utils = require('../utils/utils')
 const fileName = './data/roles.json';
 
-function getAllRoles(_, response) {
+/**
+ * This method fetched the data for all roles. 
+ * 
+ * @param {Object} request contains the request object
+ * @param {Object} response Contains the response object
+ */
+function getAllRoles(request, response) {
     console.log("Request received at getRoles");
     let rawdata = fs.readFileSync(fileName);
     let existingRoles = JSON.parse(rawdata);
@@ -11,24 +19,31 @@ function getAllRoles(_, response) {
     response.send(existingRoles)
 }
 
+/**
+ * Use this method to handle all add role requests. 
+ * 
+ * @param {Object} request contains the request object
+ * @param {Object} response Contains the response object
+ */
 function addRole(request, response) {
+    
+    // extracting body parameter
+    let role = request.body.body;
 
-    let role = JSON.parse(request.query.role);
+    // Reading current data
     let rawdata = fs.readFileSync(fileName);
     let existingRoles = JSON.parse(rawdata);
     console.log("Request to add role | ", role);
-    // if (existingRoles.length == 0 || !existingRoles.includes(role)) {
-    //     existingRoles.push(role)
-    // }
+
     if (existingRoles.length == 0) {
         existingRoles.push({ role: role });
     } else {
         for (let index = 0; index < existingRoles.length; index++) {
             const oldRole = existingRoles[index];
             if (role != oldRole.role) {
-                existingRoles.push({role: role});
+                existingRoles.push({ role: role });
             }
-            
+
         }
     }
     try {
@@ -38,7 +53,6 @@ function addRole(request, response) {
                 message: "Role added."
             })
         } else {
-            console.log("error")
             response.send({
                 status: 501,
                 message: "Role couldn't be saved. Try again later."
@@ -51,6 +65,13 @@ function addRole(request, response) {
 
 }
 
+
+/**
+ * This method handles all the requests for updating an existing role. 
+ * 
+ * @param {Object} request contains the request object
+ * @param {Object} response Contains the response object
+ */
 function updateRole(request, response) {
 
     let updateOpts = JSON.parse(request.query.updateOpts);
@@ -64,13 +85,12 @@ function updateRole(request, response) {
         for (let index = 0; index < existingRoles.length; index++) {
             const oldRole = existingRoles[index];
             if (updateOpts.oldVal == oldRole.role) {
-                existingRoles[index] = {role: updateOpts.newVal}
+                existingRoles[index] = { role: updateOpts.newVal }
             }
-            
+
         }
     }
     try {
-        console.log("exisitng roles - ", existingRoles);
         if (utils.writeToFile(fileName, existingRoles)) {
             console.log("Data Updated.")
             response.send({
@@ -91,6 +111,12 @@ function updateRole(request, response) {
 
 }
 
+/**
+ * This method handles all the requests for deleting an existing role. 
+ * 
+ * @param {Object} request contains the request object
+ * @param {Object} response Contains the response object
+ */
 function deleteRole(request, response) {
     console.log("Delete Role Request received.");
     let role = JSON.parse(request.query.role);
@@ -119,7 +145,9 @@ function deleteRole(request, response) {
 }
 
 
-
+/*
+* Exporting all handlers for role
+*/
 module.exports.getAllRoles = getAllRoles;
 module.exports.deleteRole = deleteRole;
 module.exports.addRole = addRole;

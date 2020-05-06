@@ -2,6 +2,8 @@
  * Require
  */
 const express = require('express');
+const bodyParser = require('body-parser');
+
 require('dotenv').config();
 const userHandler = require('./src/services/user-handler');
 const roleHandler = require('./src/services/role-handler');
@@ -19,24 +21,21 @@ app.use((req, res, next) => {
   next();
 });
 
-// Route for /getAllApps
+// Setting body parser to read data for post calls. 
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// Routes for all users related operations
 app.get("/getUsers", userHandler.getAllUsers);
 app.get("/deleteUser", userHandler.deleteUser);
-app.get("/addUser", userHandler.addUser);
+app.post("/addUser", userHandler.addUser);
 
+// Routes for all role related operations
 app.get("/getRoles", roleHandler.getAllRoles);
 app.get("/deleteRole", roleHandler.deleteRole);
-app.get("/addRole", roleHandler.addRole);
+app.post("/addRole", roleHandler.addRole);
 app.get("/updateRole", roleHandler.updateRole);
 
-
-// Route for /getAllApps
-
-
-
-
-
-
-app.listen(8080, () => {
-  console.log('Server intialised.');
+// Starting server
+app.listen(process.env.PORT, () => {
+  console.log(`Server intialised at localhost:${process.env.PORT}.`);
 });
